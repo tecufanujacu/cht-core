@@ -72,6 +72,7 @@ describe('bulk-docs handler', () => {
     utils
       .saveDoc(parentPlace)
       .then(() => utils.createUsers(users))
+      .then(() => sUtils.waitForSentinel())
       .then(done);
   });
 
@@ -215,100 +216,102 @@ describe('bulk-docs handler', () => {
       },
     ];
 
+    let ids;
+    let existentDocsInfodocs;
+
     return utils
       .saveDocs(existentDocs)
       .then(result => {
-        let ids = result.map(r => r.id);
-        let existentDocsInfodocs;
+        ids = result.map(r => r.id);
+        result.forEach(row => (docs.find(doc => doc._id === row.id)._rev = row.rev));
 
-        result.forEach(
-          row => (docs.find(doc => doc._id === row.id)._rev = row.rev)
+        return sUtils.waitForSentinel(ids);
+      })
+      .then(() => sUtils.getInfoDocs(ids))
+      .then(result => {
+        existentDocsInfodocs = result;
+        offlineRequestOptions.body = { docs };
+        return utils.requestOnTestDb(offlineRequestOptions);
+      })
+      .then(result => {
+        chai.expect(result.length).to.equal(8);
+        chai.expect(result[0]).to.deep.include({
+          ok: true,
+          id: 'new_allowed_contact_1',
+        });
+        chai.expect(result[5]).to.deep.include({
+          ok: true,
+          id: 'allowed_contact_2',
+        });
+        chai.expect(result[7]).to.include({ ok: true });
+        chai.expect(result[1]).to.deep.equal({
+          id: 'new_denied_contact_1',
+          error: 'forbidden',
+        });
+        chai.expect(result[2]).to.deep.equal({
+          id: 'denied_contact_1',
+          error: 'forbidden',
+        });
+        chai.expect(result[3]).to.deep.equal({
+          id: 'denied_contact_2',
+          error: 'forbidden',
+        });
+        chai.expect(result[4]).to.deep.equal({
+          id: 'allowed_contact_1',
+          error: 'forbidden',
+        });
+        chai.expect(result[6]).to.deep.equal({ error: 'forbidden' });
+
+        ids = result.map(r => r.id).filter(id => id);
+
+        return Promise.all(
+          result.map(row => utils.getDoc(row.id).catch(err => err)),
         );
+      })
+      .then(result => {
+        chai.expect(result.length).to.equal(8);
+        chai.expect(result[0]).excluding('_rev').to.deep.equal(docs[0]);
+        chai.expect(result[1]).to.deep.nested.include({ 'responseBody.error': 'not_found' });
+        chai.expect(result[2]).excluding('_rev').to.deep.equal(existentDocs[2]);
+        chai.expect(result[3]).excluding('_rev').to.deep.equal(existentDocs[3]);
+        chai.expect(result[4]).excluding('_rev').to.deep.equal(existentDocs[0]);
 
-        return sUtils.waitForSentinel(ids)
-          .then(() => sUtils.getInfoDocs(ids))
-          .then(result => {
-            existentDocsInfodocs = result;
-            offlineRequestOptions.body = { docs };
-            return utils.requestOnTestDb(offlineRequestOptions);
-          }).then(result => {
-            chai.expect(result.length).to.equal(8);
-            chai.expect(result[0]).to.deep.include({
-              ok: true,
-              id: 'new_allowed_contact_1',
-            });
-            chai.expect(result[5]).to.deep.include({
-              ok: true,
-              id: 'allowed_contact_2',
-            });
-            chai.expect(result[7]).to.include({ ok: true });
-            chai.expect(result[1]).to.deep.equal({
-              id: 'new_denied_contact_1',
-              error: 'forbidden',
-            });
-            chai.expect(result[2]).to.deep.equal({
-              id: 'denied_contact_1',
-              error: 'forbidden',
-            });
-            chai.expect(result[3]).to.deep.equal({
-              id: 'denied_contact_2',
-              error: 'forbidden',
-            });
-            chai.expect(result[4]).to.deep.equal({
-              id: 'allowed_contact_1',
-              error: 'forbidden',
-            });
-            chai.expect(result[6]).to.deep.equal({ error: 'forbidden' });
+        chai.expect(result[5]).excluding('_rev').to.deep.equal(docs[5]);
+        chai.expect(result[6]).to.deep.nested.include({ 'responseBody.error': 'not_found' });
+        chai.expect(result[7]).excluding( ['_rev', '_id']).to.deep.equal(docs[7]);
 
-            ids = result.map(r => r.id).filter(id => id);
+        return sUtils.waitForSentinel(ids).then(() => sUtils.getInfoDocs(ids));
+      })
+      .then(result => {
+        chai.expect(result.length).to.equal(7);
+        // Successful new write
+        chai.expect(result[0]).to.include({ _id: 'new_allowed_contact_1-info' });
 
-            return Promise.all(
-              result.map(row => utils.getDoc(row.id).catch(err => err)),
-            );
-          }).then(result => {
-            chai.expect(result.length).to.equal(8);
-            chai.expect(result[0]).excluding('_rev').to.deep.equal(docs[0]);
-            chai.expect(result[1]).to.deep.nested.include({ 'responseBody.error': 'not_found' });
-            chai.expect(result[2]).excluding('_rev').to.deep.equal(existentDocs[2]);
-            chai.expect(result[3]).excluding('_rev').to.deep.equal(existentDocs[3]);
-            chai.expect(result[4]).excluding('_rev').to.deep.equal(existentDocs[0]);
+        // Unsuccessful new write
+        chai.expect(result[1]).to.be.undefined;
 
-            chai.expect(result[5]).excluding('_rev').to.deep.equal(docs[5]);
-            chai.expect(result[6]).to.deep.nested.include({ 'responseBody.error': 'not_found' });
-            chai.expect(result[7]).excluding( ['_rev', '_id']).to.deep.equal(docs[7]);
+        // Unsuccessful writes to existing
+        chai.expect(result[2]).to.deep.include({
+          _id: existentDocsInfodocs[2]._id,
+          latest_replication_date: existentDocsInfodocs[2].latest_replication_date
+        });
+        chai.expect(result[3]).to.deep.include({
+          _id: existentDocsInfodocs[3]._id,
+          latest_replication_date: existentDocsInfodocs[3].latest_replication_date
+        });
+        chai.expect(result[4]).to.deep.include({
+          _id: existentDocsInfodocs[0]._id,
+          latest_replication_date: existentDocsInfodocs[0].latest_replication_date
+        });
 
-            return sUtils.waitForSentinel(ids).then(() => sUtils.getInfoDocs(ids));
-          }).then(result => {
-            chai.expect(result.length).to.equal(7);
-            // Successful new write
-            chai.expect(result[0]).to.include({ _id: 'new_allowed_contact_1-info' });
+        // Successful write to existing
+        chai.expect(result[5]).to.include({ _id: existentDocsInfodocs[1]._id });
+        chai.expect(result[5]).to.not.include({
+          latest_replication_date: existentDocsInfodocs[1].latest_replication_date,
+        });
 
-            // Unsuccessful new write
-            chai.expect(result[1]).to.be.undefined;
-
-            // Unsuccessful writes to existing
-            chai.expect(result[2]).to.deep.include({
-              _id: existentDocsInfodocs[2]._id,
-              latest_replication_date: existentDocsInfodocs[2].latest_replication_date
-            });
-            chai.expect(result[3]).to.deep.include({
-              _id: existentDocsInfodocs[3]._id,
-              latest_replication_date: existentDocsInfodocs[3].latest_replication_date
-            });
-            chai.expect(result[4]).to.deep.include({
-              _id: existentDocsInfodocs[0]._id,
-              latest_replication_date: existentDocsInfodocs[0].latest_replication_date
-            });
-
-            // Successful write to existing
-            chai.expect(result[5]).to.include({ _id: existentDocsInfodocs[1]._id });
-            chai.expect(result[5]).to.not.include({
-              latest_replication_date: existentDocsInfodocs[1].latest_replication_date,
-            });
-
-            // Successful completely new write
-            chai.expect(result[6]).to.be.ok;
-          });
+        // Successful completely new write
+        chai.expect(result[6]).to.be.ok;
       });
   });
 
