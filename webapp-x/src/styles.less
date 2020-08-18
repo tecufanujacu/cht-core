@@ -1,0 +1,99 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~font-awesome/css/font-awesome.css";
+@import "variables";
+@import "font";
+@import "mobile";
+@import "material";
+@import "dropdown";
+
+body {
+  overflow-y: hidden;
+}
+
+/** Bootstrap-layer **/
+.bootstrap-layer {
+  z-index: 11;
+  background-color: @gray-ultra-light;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.bootstrapped .bootstrap-layer {
+  display: none;
+}
+
+/** Layout **/
+.container-fluid {
+  overflow: hidden;
+  background-color: @background-color;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.row .inner {
+  max-width: @content-width;
+  margin: 0 auto;
+}
+
+.content {
+  .page {
+    top: 123px;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    max-width: @content-width;
+    z-index: 2;
+  }
+
+  .inbox {
+    background-color: @background-color;
+  }
+}
+
+
+/** Inbox Items **/
+.inbox-items,
+.item-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  background-color: @background-color;
+}
+
+.inbox-items {
+  padding: 0;
+  background-color: @form-background-color;
+  border: 1px solid @separator-color;
+  border-top: 0;
+  border-bottom: 0;
+
+  .alert {
+    margin: 10px;
+  }
+
+  .padding {
+    height: 120px;
+  }
+}
+
+.inbox-items .selection-count {
+  padding: 5px 10px;
+  margin: 0;
+  background-color: @label-color;
+  color: @white;
+  font-size: @font-small;
+  font-weight: bold;
+  display: none;
+}
+
