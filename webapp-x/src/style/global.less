@@ -1,0 +1,54 @@
+body {
+  overflow-y: hidden;
+}
+
+/** Bootstrap-layer **/
+.bootstrap-layer {
+  z-index: 11;
+  background-color: @gray-ultra-light;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.bootstrapped .bootstrap-layer {
+  display: none;
+}
+
+/** Layout **/
+.container-fluid {
+  overflow: hidden;
+  background-color: @background-color;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.row .inner {
+  max-width: @content-width;
+  margin: 0 auto;
+}
+
+.content {
+  .page {
+    top: 123px;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    max-width: @content-width;
+    z-index: 2;
+  }
+
+  .inbox {
+    background-color: @background-color;
+  }
+}

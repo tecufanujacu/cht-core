@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { HeaderComponent } from './components/header/header.component';
+import { HeaderLogoPipe } from './pipes/header-logo.pipe';
 
 
 @NgModule({
   declarations: [
-    HeaderComponent
+    HeaderComponent,
+    HeaderLogoPipe
   ],
   imports: [
     CommonModule,
     NgbModule
   ],
   exports: [
-    HeaderComponent
+    HeaderComponent,
+    HeaderLogoPipe
   ]
 })
 export class SharedModule { }

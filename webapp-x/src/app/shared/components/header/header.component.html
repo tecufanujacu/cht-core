@@ -5,13 +5,12 @@
 
     <a routerLink="/home">
       <div class="logo">
-          <!-- TODO <div class="logo-full" ng-bind-html="'logo' | headerLogo"></div> -->
+          <div class="logo-full" [innerHTML]="'logo' | headerLogo"></div>
       </div>
     </a>
 
 
     <div class="extras">
-
       <span ngbDropdown class="dropdown options nav-item" placement="bottom-right">
         <a ngbDropdownToggle id="header-menu">
           <div class="mm-icon mm-icon-inverse">

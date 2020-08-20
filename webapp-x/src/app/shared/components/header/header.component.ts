@@ -2,8 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.less']
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent implements OnInit {
   @Input() adminUrl;
@@ -11,9 +10,10 @@ export class HeaderComponent implements OnInit {
   @Input() tours;
   showPrivacyPolicy =  false;
   replicationStatus;
-  currentTab = 'tasks';
+  currentTab = 'tasks'; // ToDo -> Add default
   unreadCount = {};
-  permittedTabs = [
+
+  permittedTabs = [ // This is for testing. ToDo migrate -> this is coming from Header Tabs factory.
     {
       name: 'messages',
       state: 'messages.detail',

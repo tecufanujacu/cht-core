@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PouchDB } from './pouchdb.service';
+import { ResourceIcons } from './resource-icons.service';
 
-describe('PouchDB', () => {
-  let service: PouchDB;
+describe('ResourceIcons', () => {
+  let service: ResourceIcons;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PouchDB);
+    service = TestBed.inject(ResourceIcons);
   });
 
   it('should be created', () => {

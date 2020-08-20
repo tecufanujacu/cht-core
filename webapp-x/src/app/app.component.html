@@ -1,0 +1,30 @@
+<section class="app-main inbox {{currentTab}}" [ngClass]="{'show-content': showContent, 'bootstrapped': privacyPolicyAccepted, 'select-mode': selectMode, 'hide-mobile-tab-labels': minimalTabs }">
+
+  <div class="bootstrap-layer">
+    <div>
+      <div class="loader"></div>
+      <div class="status"></div>
+      <div class="error"></div>
+    </div>
+  </div>
+  <!-- TODO migrate
+  <mm-privacy-policy *ngIf="showPrivacyPolicy && !privacyPolicyAccepted"></mm-privacy-policy>
+
+  <mm-actionbar [non-contact-forms]="nonContactForms"></mm-actionbar>
+  -->
+  <div class="container-fluid" *ngIf="privacyPolicyAccepted">
+    <!-- TODO migrate <mm-startup-modals/> -->
+    <app-header [adminUrl]="adminUrl"
+                [canLogOut]="canLogOut"
+                [tours]="tours">
+    </app-header>
+    <div class="row content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <div id="snackbar">
+    <span class="snackbar-content"></span>
+  </div>
+
+</section>

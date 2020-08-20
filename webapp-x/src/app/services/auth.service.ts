@@ -15,7 +15,7 @@ export class Auth {
 
   any(permissionsList) {
     // The `permissionsList` is an array that contains groups of arrays mainly attributed
-    // to the complexity of permssion grouping
+    // to the complexity of permission grouping
     return this.getRoles()
       .then(roles => {
         if (!Array.isArray(permissionsList)) {
