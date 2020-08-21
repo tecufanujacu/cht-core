@@ -1,14 +1,14 @@
 // While we already do this earlier in inbox.js we have to check again for Karma
 // tests as they don't hit that code
-if (!window.startupTimes) {
-  window.startupTimes = {};
+if (!(<any>window).startupTimes) {
+  (<any>window).startupTimes = {};
 }
-window.startupTimes.firstCodeExecution = performance.now();
+(<any>window).startupTimes.firstCodeExecution = performance.now();
 
-window.PouchDB = require('pouchdb-browser');
-window.PouchDB.plugin(require('pouchdb-debug'));
-window.$ = window.jQuery = require('jquery');
-window.d3 = require('d3');
+(<any>window).PouchDB = require('pouchdb-browser');
+(<any>window).PouchDB.plugin(require('pouchdb-debug'));
+(<any>window).$ = window.jQuery = require('jquery');
+(<any>window).d3 = require('d3');
 
 require('../../node_modules/select2/dist/js/select2.full');
 require('bootstrap');
@@ -16,24 +16,11 @@ require('./bootstrap-multidropdown');
 require('bootstrap-daterangepicker');
 require('nvd3');
 
-require('angular');
-require('angular-cookie');
-require('angular-nvd3');
-require('angular-pouchdb');
-require('angular-resource');
-require('angular-route');
-require('angular-sanitize');
-require('angular-translate');
-require('angular-translate-interpolation-messageformat');
-require('angular-translate-handler-log');
-require('angular-ui-bootstrap');
-const uiRouter = require('@uirouter/angularjs').default;
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-require('ng-redux');
-const reduxThunk = require('redux-thunk').default;
-const cloneDeep = require('lodash/cloneDeep');
-const objectPath = require('object-path');
-const lineage = require('@medic/lineage')();
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
 
 require('moment');
 require('moment/locale/bm');
