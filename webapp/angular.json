@@ -11,25 +11,26 @@
         }
       },
       "root": "",
-      "sourceRoot": "src/ts",
+      "sourceRoot": "src",
       "prefix": "",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/webapp",
+            "outputPath": "../build/ddocs/medic/_attachments",
             "index": "src/templates/inbox.html",
             "main": "src/ts/main.ts",
             "polyfills": "src/ts/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "src/img",
+              "src/fonts",
+              "src/audio"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/inbox.less"
+              "src/css/inbox.less"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -42,8 +43,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "src/ts/environments/environment.ts",
+                  "with": "src/ts/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -66,17 +67,6 @@
                   "maximumError": "10kb"
                 }
               ]
-            }
-          }
-        },
-        "build": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "webapp:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "webapp:build:production"
             }
           }
         },

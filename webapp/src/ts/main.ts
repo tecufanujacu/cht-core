@@ -7,20 +7,20 @@ if (!(<any>window).startupTimes) {
 
 (<any>window).PouchDB = require('pouchdb-browser');
 (<any>window).PouchDB.plugin(require('pouchdb-debug'));
-(<any>window).$ = window.jQuery = require('jquery');
-(<any>window).d3 = require('d3');
+(<any>window).$ = (<any>window).jQuery = require('jquery');
+//(<any>window).d3 = require('d3');
 
 require('../../node_modules/select2/dist/js/select2.full');
 require('bootstrap');
-require('./bootstrap-multidropdown');
+require('../js/bootstrap-multidropdown');
 require('bootstrap-daterangepicker');
-require('nvd3');
+//require('nvd3');
 
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+import { AppModule } from './app.module';
+import { environment } from './environments/envirtonment';
 
 require('moment');
 require('moment/locale/bm');
@@ -31,19 +31,10 @@ require('moment/locale/id');
 require('moment/locale/ne');
 require('moment/locale/sw');
 
-require('./services');
-require('./actions');
-require('./reducers');
-require('./selectors');
-require('./controllers');
-require('./filters');
-require('./directives');
-require('./enketo/main');
+const bootstrapper = require('../js/bootstrapper');
+//const router = require('./router');
 
-const bootstrapper = require('./bootstrapper');
-const router = require('./router');
-
-const KARMA_UNIT_TEST_PORT = '9876';
+/*const KARMA_UNIT_TEST_PORT = '9876';
 
 const minifySelected = selected => {
   const pathsToMinify = ['doc', 'formatted'];
@@ -88,11 +79,12 @@ const createReduxLoggerConfig = Selectors => ({
   },
   collapsed: true
 });
+ */
 
 (function() {
   'use strict';
 
-  angular.module('inboxApp', [
+  /*angular.module('inboxApp', [
     'ngRoute',
     'inboxControllers',
     'inboxDirectives',
@@ -141,7 +133,7 @@ const createReduxLoggerConfig = Selectors => ({
       middlewares.push(reduxLogger.createLogger(createReduxLoggerConfig(Selectors)));
     }
     $ngReduxProvider.createStoreWith(RootReducer, middlewares);
-  });
+  });*/
 
   // 32 million characters is guaranteed to be rejected by the API JSON
   // parser limit of 32MB so don't even bother POSTing. If there are many
@@ -169,7 +161,7 @@ const createReduxLoggerConfig = Selectors => ({
           opts.headers.set(header, POUCHDB_OPTIONS.remote_headers[header]);
         });
         opts.credentials = 'same-origin';
-        return window.PouchDB.fetch(url, opts);
+        return (<any>window).PouchDB.fetch(url, opts);
       },
     },
     remote_headers: {
@@ -177,14 +169,14 @@ const createReduxLoggerConfig = Selectors => ({
     }
   };
 
-  angular.module('inboxApp').constant('POUCHDB_OPTIONS', POUCHDB_OPTIONS);
+  //angular.module('inboxApp').constant('POUCHDB_OPTIONS', POUCHDB_OPTIONS);
 
   if (window.location.href === 'http://localhost:9876/context.html') {
     // karma unit testing - do not bootstrap
     return;
   }
 
-  const ROUTE_PERMISSIONS = {
+  /*const ROUTE_PERMISSIONS = {
     tasks: 'can_view_tasks',
     messages: 'can_view_messages',
     contacts: 'can_view_contacts',
@@ -195,10 +187,10 @@ const createReduxLoggerConfig = Selectors => ({
 
   const getRequiredPermissions = function(route) {
     return ROUTE_PERMISSIONS[route] || ROUTE_PERMISSIONS[route.split('.')[0]];
-  };
+  };*/
 
   // Detects reloads or route updates (#/something)
-  angular.module('inboxApp').run(function($state, $transitions, Auth) {
+  /*angular.module('inboxApp').run(function($state, $transitions, Auth) {
     $transitions.onBefore({}, function(trans) {
       if (trans.to().name.indexOf('error') === -1) {
         const permissions = getRequiredPermissions(trans.to().name);
@@ -211,7 +203,7 @@ const createReduxLoggerConfig = Selectors => ({
         }
       }
     });
-  });
+  });*/
 
   bootstrapper(POUCHDB_OPTIONS, function(err) {
     if (err) {
@@ -226,11 +218,18 @@ const createReduxLoggerConfig = Selectors => ({
       }
       return;
     }
-    window.startupTimes.bootstrapped = performance.now();
-    angular.element(document).ready(function() {
+    (<any>window).startupTimes.bootstrapped = performance.now();
+    /*angular.element(document).ready(function() {
       angular.bootstrap(document, ['inboxApp'], {
         strictDi: true,
       });
-    });
+    });*/
+    if (environment.production) {
+      enableProdMode();
+    }
+
+    platformBrowserDynamic()
+      .bootstrapModule(AppModule)
+      .catch(err => console.error(err));
   });
 })();

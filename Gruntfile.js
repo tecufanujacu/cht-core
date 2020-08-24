@@ -152,7 +152,7 @@ module.exports = function(grunt) {
           debug: true,
         },
       },
-      webapp: {
+      /*webapp: {
         src: 'webapp/src/js/app.js',
         dest: 'build/ddocs/medic/_attachments/js/inbox.js',
         browserifyOptions: {
@@ -182,7 +182,7 @@ module.exports = function(grunt) {
             'lodash/groupBy': './webapp/node_modules/lodash/groupBy',
           },
         },
-      },
+      },*/
       admin: {
         src: 'admin/src/js/main.js',
         dest: 'build/ddocs/medic-db/medic-admin/_attachments/js/main.js',
@@ -650,6 +650,19 @@ module.exports = function(grunt) {
           const actions = ['upload-app-settings', 'upload-app-forms', 'upload-collect-forms', 'upload-contact-forms', 'upload-resources', 'upload-custom-translations'];
           return `node ${medicConfPath} --skip-dependency-check --archive --source=${configPath} --destination=${buildPath} ${actions.join(' ')}`;
         }
+      },
+      'build-webapp': {
+        cmd: () => {
+          return [
+            `cd webapp`,
+            `ng build`,
+            `cd ../build`,
+            `mkdir ddocs/medic/_attachments/js`,
+            `cat ddocs/medic/_attachments/{main,polyfills-es5,runtime,styles,vendor}.js > ddocs/medic/_attachments/js/inbox.js`,
+            `rm ddocs/medic/_attachments/{main,polyfills-es5,runtime,styles,vendor}.js`,
+            'cd ../',
+          ].join(' && ');
+        }
       }
     },
     watch: {
@@ -711,15 +724,16 @@ module.exports = function(grunt) {
       'webapp-js': {
         files: ['webapp/src/js/**/*', 'shared-libs/*/src/**/*'],
         tasks: [
-          'browserify:webapp',
+          //'browserify:webapp',
+          'exec:build-webapp',
           'generate-service-worker',
           'couch-compile:primary',
           'deploy',
         ],
       },
-      'webapp-templates': {
+      /*'webapp-templates': {
         files: [
-          'webapp/src/templates/**/*',
+          'webapp/src/templates/!**!/!*',
           '!webapp/src/templates/inbox.html',
         ],
         tasks: [
@@ -728,7 +742,7 @@ module.exports = function(grunt) {
           'couch-compile:primary',
           'deploy',
         ],
-      },
+      },*/
       'inbox-html-template': {
         files: 'webapp/src/templates/inbox.html',
         tasks: [
@@ -825,12 +839,12 @@ module.exports = function(grunt) {
       },
     },
     ngtemplates: {
-      inboxApp: {
+      /*inboxApp: {
         cwd: 'webapp/src',
         src: [
-          'templates/modals/**/*.html',
-          'templates/partials/**/*.html',
-          'templates/directives/**/*.html',
+          'templates/modals/!**!/!*.html',
+          'templates/partials/!**!/!*.html',
+          'templates/directives/!**!/!*.html',
         ],
         dest: 'build/ddocs/medic/_attachments/js/templates.js',
         options: {
@@ -845,7 +859,7 @@ module.exports = function(grunt) {
             removeStyleLinkTypeAttributes: true,
           },
         },
-      },
+      },*/
       adminApp: {
         cwd: 'admin/src',
         src: ['templates/**/*.html', '!templates/index.html'],
@@ -880,14 +894,10 @@ module.exports = function(grunt) {
       },
     },
     'optimize-js': {
-      'build/ddocs/medic/_attachments/js/inbox.js':
-        'build/ddocs/medic/_attachments/js/inbox.js',
-      'build/ddocs/medic/_attachments/js/templates.js':
-        'build/ddocs/medic/_attachments/js/templates.js',
-      'build/ddocs/medic-db/medic-admin/_attachments/js/main.js':
-        'build/ddocs/medic-db/medic-admin/_attachments/js/main.js',
-      'build/ddocs/medic-db/medic-admin/_attachments/js/templates.js':
-        'build/ddocs/medic-db/medic-admin/_attachments/js/templates.js',
+      'build/ddocs/medic/_attachments/js/inbox.js': 'build/ddocs/medic/_attachments/js/inbox.js',
+      //'build/ddocs/medic/_attachments/js/templates.js': 'build/ddocs/medic/_attachments/js/templates.js',
+      'build/ddocs/medic-db/medic-admin/_attachments/js/main.js': 'build/ddocs/medic-db/medic-admin/_attachments/js/main.js',
+      'build/ddocs/medic-db/medic-admin/_attachments/js/templates.js': 'build/ddocs/medic-db/medic-admin/_attachments/js/templates.js',
     },
     jsdoc: {
       admin: {
@@ -948,8 +958,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build-js', 'Build the JS resources', [
-    'browserify:webapp',
-    'ngtemplates:inboxApp',
+    //'browserify:webapp',
+    'exec:build-webapp',
+    //'ngtemplates:inboxApp',
   ]);
 
   grunt.registerTask('build-css', 'Build the CSS resources', [
