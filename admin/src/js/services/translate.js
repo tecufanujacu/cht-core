@@ -1,7 +1,7 @@
 /**
  * Service to encapsulate repeatedly used translation logic
  */
-angular.module('inboxServices').service('Translate',
+angular.module('services').service('Translate',
   function(
     $translate
   ) {
@@ -18,6 +18,6 @@ angular.module('inboxServices').service('Translate',
 
     return {
       fieldIsRequired: fieldIsRequired
-    };    
+    };
   }
 );

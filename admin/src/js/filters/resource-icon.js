@@ -1,4 +1,4 @@
-angular.module('inboxFilters').filter('resourceIcon',
+angular.module('filters').filter('resourceIcon',
   function (
     $sce,
     ResourceIcons
@@ -11,7 +11,7 @@ angular.module('inboxFilters').filter('resourceIcon',
   }
 );
 
-angular.module('inboxFilters').filter('headerLogo',
+angular.module('filters').filter('headerLogo',
   function(
     $sce,
     ResourceIcons
@@ -24,7 +24,7 @@ angular.module('inboxFilters').filter('headerLogo',
   }
 );
 
-angular.module('inboxFilters').filter('partnerImage',
+angular.module('filters').filter('partnerImage',
   function(
     $sce,
     ResourceIcons

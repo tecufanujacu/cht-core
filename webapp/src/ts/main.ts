@@ -5,7 +5,7 @@ if (!(<any>window).startupTimes) {
 }
 (<any>window).startupTimes.firstCodeExecution = performance.now();
 
-(<any>window).PouchDB = require('pouchdb-browser');
+(<any>window).PouchDB = require('pouchdb-browser').default;
 (<any>window).PouchDB.plugin(require('pouchdb-debug'));
 (<any>window).$ = (<any>window).jQuery = require('jquery');
 //(<any>window).d3 = require('d3');
@@ -20,7 +20,8 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app.module';
-import { environment } from './environments/envirtonment';
+import { environment } from './environments/environment';
+import { POUCHDB_OPTIONS } from "./constants";
 
 require('moment');
 require('moment/locale/bm');
@@ -134,40 +135,6 @@ const createReduxLoggerConfig = Selectors => ({
     }
     $ngReduxProvider.createStoreWith(RootReducer, middlewares);
   });*/
-
-  // 32 million characters is guaranteed to be rejected by the API JSON
-  // parser limit of 32MB so don't even bother POSTing. If there are many
-  // 2 byte characters then a smaller body may also fail. Detecting the
-  // exact byte length of a string is too expensive so we let the request
-  // go and if it's still too long then API will respond with a 413.
-  const BODY_LENGTH_LIMIT = 32000000; // 32 million
-  const POUCHDB_OPTIONS = {
-    local: { auto_compaction: true },
-    remote: {
-      skip_setup: true,
-      fetch: function(url, opts) {
-        const parsedUrl = new URL(url);
-        if (parsedUrl.pathname === '/') {
-          parsedUrl.pathname = '/dbinfo';
-          url = parsedUrl.toString();
-        }
-        if (opts.body && opts.body.length > BODY_LENGTH_LIMIT) {
-          return Promise.reject({
-            message: 'Payload Too Large',
-            code: 413
-          });
-        }
-        Object.keys(POUCHDB_OPTIONS.remote_headers).forEach(header => {
-          opts.headers.set(header, POUCHDB_OPTIONS.remote_headers[header]);
-        });
-        opts.credentials = 'same-origin';
-        return (<any>window).PouchDB.fetch(url, opts);
-      },
-    },
-    remote_headers: {
-      'Accept': 'application/json'
-    }
-  };
 
   //angular.module('inboxApp').constant('POUCHDB_OPTIONS', POUCHDB_OPTIONS);
 

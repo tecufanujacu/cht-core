@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('HeaderTabs',
+angular.module('services').factory('HeaderTabs',
   function() {
 
     'use strict';

@@ -1,6 +1,6 @@
 const _ = require('lodash/core');
 
-angular.module('inboxServices').factory('GetSubjectSummaries',
+angular.module('services').factory('GetSubjectSummaries',
   function(
     $q,
     DB,

@@ -6,7 +6,7 @@ const USER_DB_SUFFIX = 'user';
 const META_DB_SUFFIX = 'meta';
 const USERS_DB_SUFFIX = 'users';
 
-angular.module('inboxServices').factory('DB',
+angular.module('services').factory('DB',
   function(
     $timeout,
     Location,

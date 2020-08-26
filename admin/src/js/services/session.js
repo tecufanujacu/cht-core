@@ -6,7 +6,7 @@ const _ = require('lodash/core');
 
   'use strict';
 
-  angular.module('inboxServices').factory('Session',
+  angular.module('services').factory('Session',
     function(
       $http,
       $log,

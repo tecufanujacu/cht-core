@@ -188,7 +188,7 @@ app.get('/', function(req, res) {
     // Required for service compatibility during upgrade.
     proxy.web(req, res);
   } else {
-    res.sendFile(path.join(extractedResourceDirectory, 'templates/inbox.html'));
+    res.sendFile(path.join(extractedResourceDirectory, 'inbox.html'));
   }
 });
 
@@ -229,6 +229,12 @@ app.get('/favicon.ico', (req, res) => {
     res.sendFile('resources/ico/favicon.ico' , { root : __dirname });
     logger.warn('Branding doc or/and favicon missing: %o', err);
   });
+});
+
+app.use('*', (req, res, next) => {
+  console.log(req._parsedUrl);
+  console.log(extractedResourceDirectory);
+  next();
 });
 
 app.use(express.static(path.join(__dirname, '../build/public')));

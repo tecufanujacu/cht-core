@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('GetSummaries',
+angular.module('services').factory('GetSummaries',
   function(
     $q,
     ContactTypes,

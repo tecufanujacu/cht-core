@@ -3,7 +3,7 @@ const _ = require('lodash/core');
 /*
  * Get all enabled languages
  */
-angular.module('inboxServices').factory('Languages',
+angular.module('services').factory('Languages',
   function(
     DB
   ) {

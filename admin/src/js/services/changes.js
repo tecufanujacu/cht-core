@@ -16,15 +16,12 @@
  *   - unsubscribe (function): Invoke this function to stop being notified of
  *        any further changes.
  */
-angular.module('inboxServices').factory('Changes',
+angular.module('services').factory('Changes',
   function(
     $log,
-    $ngRedux,
     $q,
     $timeout,
     DB,
-    Selectors,
-    ServicesActions,
     Session
   ) {
 
@@ -34,17 +31,6 @@ angular.module('inboxServices').factory('Changes',
     const RETRY_MILLIS = 5000;
 
     const self = this;
-    const mapStateToTarget = (state) => ({
-      lastChangedDoc: Selectors.getLastChangedDoc(state),
-    });
-    const mapDispatchToTarget = (dispatch) => {
-      const servicesActions = ServicesActions(dispatch);
-      return {
-        setLastChangedDoc: servicesActions.setLastChangedDoc
-      };
-    };
-
-    $ngRedux.connect(mapStateToTarget, mapDispatchToTarget)(self);
 
     const dbs = {
       medic: {

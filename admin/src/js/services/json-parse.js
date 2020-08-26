@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('JsonParse',
+angular.module('services').factory('JsonParse',
   function(
     $q
   ) {

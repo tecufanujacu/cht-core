@@ -1,6 +1,6 @@
 const contactTypesUtils = require('@medic/contact-types-utils');
 
-angular.module('inboxServices').service('ContactTypes', function(
+angular.module('services').service('ContactTypes', function(
   Settings
 ) {
   'use strict';

@@ -16,7 +16,7 @@ const registrationUtils = require('@medic/registration-utils');
  *   label: <the translation key that describes this contact's type>
  * }
  */
-angular.module('inboxServices').factory('ContactViewModelGenerator',
+angular.module('services').factory('ContactViewModelGenerator',
   function(
     $q,
     $translate,

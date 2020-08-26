@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('AddAttachment',
+angular.module('services').factory('AddAttachment',
   function() {
     'ngInject';
     'use strict';

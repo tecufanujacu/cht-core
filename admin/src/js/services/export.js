@@ -8,7 +8,7 @@ const KNOWN_EXPORTS = [
   'reports',
 ];
 
-angular.module('inboxServices').factory('Export',
+angular.module('services').factory('Export',
   function(
     $log
   ) {

@@ -2,7 +2,7 @@
 
   'use strict';
 
-  angular.module('inboxServices').factory('UserSettings',
+  angular.module('services').factory('UserSettings',
     function(
       $q,
       Cache,

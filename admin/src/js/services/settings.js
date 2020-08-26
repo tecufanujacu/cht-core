@@ -4,7 +4,7 @@
 
   const SETTINGS_ID = 'settings';
 
-  angular.module('inboxServices').factory('Settings',
+  angular.module('services').factory('Settings',
     function(
       $log,
       $q,

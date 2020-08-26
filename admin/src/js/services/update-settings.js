@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('UpdateSettings',
+angular.module('services').factory('UpdateSettings',
   function(
     $cacheFactory,
     $http

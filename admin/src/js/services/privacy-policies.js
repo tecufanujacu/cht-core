@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('PrivacyPolicies',
+angular.module('services').factory('PrivacyPolicies',
   function(
     $log,
     $q,

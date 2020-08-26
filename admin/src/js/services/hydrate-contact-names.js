@@ -1,6 +1,6 @@
 const _ = require('lodash/core');
 
-angular.module('inboxServices').factory('HydrateContactNames',
+angular.module('services').factory('HydrateContactNames',
   function(
     $q,
     GetSummaries

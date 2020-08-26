@@ -8,7 +8,7 @@ const moment = require('moment');
 const uuid = require('uuid/v4');
 
 angular
-  .module('inboxServices')
+  .module('services')
   .factory('Telemetry', function(
     $log,
     $q,

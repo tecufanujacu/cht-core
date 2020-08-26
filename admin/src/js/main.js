@@ -13,8 +13,6 @@ require('angular-translate-interpolation-messageformat');
 require('angular-ui-bootstrap');
 require('@uirouter/angularjs');
 
-require('ng-redux');
-
 angular.module('controllers', []);
 require('./controllers/main');
 require('./controllers/authorization-permissions');
@@ -52,23 +50,17 @@ require('./controllers/upgrade-confirm');
 require('./controllers/users');
 
 angular.module('directives', ['ngSanitize']);
+require('./directives/auth');
 require('./directives/file-model');
 require('./directives/modal');
 require('./directives/pagination');
 require('./directives/relative-date');
 require('./directives/release');
 
-// directives we borrow from webapp
-angular.module('inboxDirectives', []);
-require('../../../webapp/src/js/directives/auth');
-
 angular.module('filters', ['ngSanitize']);
 require('./filters/translate-from');
+require('./filters/resource-icon');
 require('./filters/build-version');
-
-// filters we borrow from webapp
-angular.module('inboxFilters', []);
-require('../../../webapp/src/js/filters/resource-icon');
 
 angular.module('services', []);
 require('./services/blob');
@@ -121,23 +113,12 @@ require('./services/update-settings');
 require('./services/update-user');
 require('./services/user');
 
-// services we borrow from webapp
-angular.module('inboxServices', []);
-
-require('../../../webapp/src/js/actions');
-require('../../../webapp/src/js/selectors');
-require('../../../webapp/src/js/reducers');
-
 angular.module('adminApp', [
   'ngRoute',
   'controllers',
   'directives',
   'filters',
-  'inboxDirectives',
-  'inboxFilters',
-  'inboxServices',
   'ipCookie',
-  'ngRedux',
   'pascalprecht.translate',
   'pouchdb',
   'services',
@@ -160,10 +141,8 @@ angular.module('adminApp').constant('POUCHDB_OPTIONS', {
 angular.module('adminApp').config(function(
   $compileProvider,
   $locationProvider,
-  $ngReduxProvider,
   $stateProvider,
-  $translateProvider,
-  RootReducer
+  $translateProvider
 ) {
   'ngInject';
 
@@ -175,8 +154,6 @@ angular.module('adminApp').config(function(
   $translateProvider.useSanitizeValueStrategy('escape');
   $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
   $translateProvider.addInterpolation('TranslationNullInterpolation');
-
-  $ngReduxProvider.createStoreWith(RootReducer, []);
 
   $stateProvider
     .state('display', {

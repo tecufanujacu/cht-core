@@ -7,7 +7,7 @@ Auth.any function receives a list of groups of permissions and returns a promise
 user's role has all the permissions of any of the provided groups.
 */
 
-angular.module('inboxServices').factory('Auth',
+angular.module('services').factory('Auth',
   function(
     $log,
     $q,

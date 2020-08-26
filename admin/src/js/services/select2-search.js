@@ -2,7 +2,7 @@ const _ = require('lodash/core');
 const format = require('../modules/format');
 const phoneNumber = require('@medic/phone-number');
 
-angular.module('inboxServices').factory('Select2Search',
+angular.module('services').factory('Select2Search',
   function(
     $log,
     $q,

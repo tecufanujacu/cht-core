@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('Location',
+angular.module('services').factory('Location',
   function($window) {
 
     'use strict';

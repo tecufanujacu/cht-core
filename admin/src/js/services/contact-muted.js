@@ -1,6 +1,6 @@
 const _ = require('lodash/core');
 
-angular.module('inboxServices').service('ContactMuted',
+angular.module('services').service('ContactMuted',
   function() {
 
     'use strict';

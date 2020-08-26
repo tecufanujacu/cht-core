@@ -3,7 +3,7 @@ const translationUtils = require('@medic/translation-utils');
 const DEFAULT_LOCALE = 'en';
 const DOC_ID_PREFIX = 'messages-';
 
-angular.module('inboxServices').factory('TranslationLoader',
+angular.module('services').factory('TranslationLoader',
   function(
     $q,
     DB,

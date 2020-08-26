@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('TranslationNullInterpolation', function($translateSanitization) {
+angular.module('services').factory('TranslationNullInterpolation', function($translateSanitization) {
   return {
     setLocale: function () {},
     getInterpolationIdentifier: function () {

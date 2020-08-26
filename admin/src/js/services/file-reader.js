@@ -1,4 +1,4 @@
-angular.module('inboxServices').service('FileReader',
+angular.module('services').service('FileReader',
   function($q) {
     'use strict';
     'ngInject';

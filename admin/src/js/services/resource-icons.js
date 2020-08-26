@@ -1,4 +1,4 @@
-angular.module('inboxServices').factory('ResourceIcons',
+angular.module('services').factory('ResourceIcons',
   function(
     $log,
     Changes,

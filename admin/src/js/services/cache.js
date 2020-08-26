@@ -2,7 +2,7 @@
 
   'use strict';
 
-  angular.module('inboxServices').factory('Cache',
+  angular.module('services').factory('Cache',
     function(Changes) {
       'ngInject';
 
@@ -67,4 +67,4 @@
     }
   );
 
-}()); 
+}());

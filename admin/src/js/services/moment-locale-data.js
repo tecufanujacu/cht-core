@@ -7,10 +7,10 @@ const moment = require('moment');
 
   'use strict';
 
-  angular.module('inboxServices').factory('MomentLocaleData',
+  angular.module('services').factory('MomentLocaleData',
     function() {
       return moment.localeData;
     }
   );
-  
-}()); 
+
+}());
