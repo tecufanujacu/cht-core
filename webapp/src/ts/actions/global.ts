@@ -1,5 +1,18 @@
-const actionTypes = require('./actionTypes');
+import { Store } from '@ngrx/store';
+import { ActionTypes, createSingleValueAction } from './actionTypes';
 
+export class GlobalActions {
+  constructor(private store: Store) {}
+
+  updateReplicationStatus(replicationStatus) {
+    const action = createSingleValueAction(ActionTypes.UPDATE_REPLICATION_STATUS, 'replicationStatus', replicationStatus);
+    return this.store.dispatch(action);
+  }
+}
+
+
+
+/*
 angular.module('inboxServices').factory('GlobalActions',
   function(
     $state,
@@ -133,11 +146,7 @@ angular.module('inboxServices').factory('GlobalActions',
         dispatch(ActionUtils.createSingleValueAction(actionTypes.UPDATE_UNREAD_COUNT, 'unreadCount', unreadCount));
       }
 
-      function updateReplicationStatus(replicationStatus) {
-        dispatch(ActionUtils.createSingleValueAction(
-          actionTypes.UPDATE_REPLICATION_STATUS, 'replicationStatus', replicationStatus
-        ));
-      }
+
 
       function setLoadingShowContent(id) {
         setLoadingContent(id);
@@ -157,9 +166,9 @@ angular.module('inboxServices').factory('GlobalActions',
         });
       }
 
-      /**
+      /!**
        * Unset the selected item
-       */
+       *!/
       function unsetSelected() {
         setShowContent(false);
         setLoadingContent(false);
@@ -311,3 +320,4 @@ angular.module('inboxServices').factory('GlobalActions',
     };
   }
 );
+*/

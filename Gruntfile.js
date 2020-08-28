@@ -290,12 +290,12 @@ module.exports = function(grunt) {
         src: '**/*',
         dest: 'build/ddocs/',
       },
-      webapp: {
+      /*webapp: {
         expand: true,
         flatten: true,
-        src: 'webapp/node_modules/font-awesome/fonts/*',
+        src: 'webapp/node_modules/font-awesome/fonts/!*',
         dest: 'build/ddocs/medic/_attachments/fonts/',
-      },
+      },*/
       /*'inbox-file-attachment': {
         expand: true,
         cwd: 'webapp/src/',
@@ -655,7 +655,7 @@ module.exports = function(grunt) {
         cmd: () => {
           return [
             `cd webapp`,
-            `../node_modules/.bin/ng build`,
+            `../node_modules/.bin/ng build --configuration=development`,
             `../node_modules/.bin/ngc`,
             'cd ../',
           ].join(' && ');
@@ -708,8 +708,8 @@ module.exports = function(grunt) {
           'notify:deployed',
         ],
       },
-      'webapp-css': {
-        files: ['webapp/src/css/**/*'],
+      /*'webapp-css': {
+        files: ['webapp/src/css/!**!/!*'],
         tasks: [
           'sass',
           'less:webapp',
@@ -717,9 +717,9 @@ module.exports = function(grunt) {
           'couch-compile:primary',
           'deploy',
         ],
-      },
+      },*/
       'webapp-js': {
-        files: ['webapp/src/js/**/*', 'shared-libs/*/src/**/*', 'webapp/src/ts/**/*'],
+        files: ['webapp/src/js/**/*', 'shared-libs/!*!/src/!**!/!*', 'webapp/src/ts/!**/!*'],
         tasks: [
           //'browserify:webapp',
           'exec:build-webapp',
@@ -728,6 +728,14 @@ module.exports = function(grunt) {
           'deploy',
         ],
       },
+      /*'webapp-build': {
+        files: ['build/ddocs/medic/_attachments/!**!/!*'],
+        tasks: [
+          'generate-service-worker',
+          'couch-compile:primary',
+          'deploy',
+        ],
+      },*/
       /*'webapp-templates': {
         files: [
           'webapp/src/templates/!**!/!*',

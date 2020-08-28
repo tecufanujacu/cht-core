@@ -231,12 +231,6 @@ app.get('/favicon.ico', (req, res) => {
   });
 });
 
-app.use('*', (req, res, next) => {
-  console.log(req._parsedUrl);
-  console.log(extractedResourceDirectory);
-  next();
-});
-
 app.use(express.static(path.join(__dirname, '../build/public')));
 app.use(express.static(extractedResourceDirectory));
 app.get(routePrefix + 'login', login.get);

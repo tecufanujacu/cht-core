@@ -5,7 +5,31 @@ const LAST_REPLICATED_SEQ_KEY = 'medic-last-replicated-seq';
 const LAST_REPLICATED_DATE_KEY = 'medic-last-replicated-date';
 const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
 const META_SYNC_INTERVAL = 30 * 60 * 1000; // 30 minutes
-const purger = require('../bootstrapper/purger');
+const purger = require('../../js/bootstrapper/purger');
+
+import { Injectable } from '@angular/core';
+
+import { Session } from './session.service'
+import { Location } from "./location.service";
+import { POUCHDB_OPTIONS } from '../constants';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DBSync {
+  constructor() {}
+
+  isEnabled() {
+    return false;
+  }
+
+  sync() {
+
+  }
+}
+
+/*
+
 
 angular
   .module('inboxServices')
@@ -193,25 +217,25 @@ angular
     const isEnabled = () => !Session.isOnlineOnly();
 
     return {
-      /**
+      /!**
        * Adds a listener function to be notified of replication state changes.
        *
        * @param listener {Function} A callback `function (update)`
-       */
+       *!/
       addUpdateListener: listener => {
         updateListeners.push(listener);
       },
 
-      /**
+      /!**
        * Boolean representing if sync is curently in progress
-       */
+       *!/
       isSyncInProgress: () => !!inProgressSync,
 
-      /**
+      /!**
        * Set the current user's online status to control when replications will be attempted.
        *
        * @param newOnlineState {Boolean} The current online state of the user.
-       */
+       *!/
       setOnlineStatus: onlineStatus => {
         if (knownOnlineState !== onlineStatus) {
           knownOnlineState = !!onlineStatus;
@@ -223,16 +247,16 @@ angular
         }
       },
 
-      /**
+      /!**
        * @returns {boolean} Whether or not syncing is available for this user.
-       */
+       *!/
       isEnabled: isEnabled,
 
-      /**
+      /!**
        * Synchronize the local database with the remote database.
        *
        * @returns Promise which resolves when both directions of the replication complete.
-       */
+       *!/
       sync: force => {
         if (!isEnabled()) {
           sendUpdate({ state: 'disabled' });
@@ -249,3 +273,4 @@ angular
       },
     };
   });
+*/

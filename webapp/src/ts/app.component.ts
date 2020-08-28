@@ -15,6 +15,30 @@ _.templateSettings = require('lodash/templateSettings');
 _.templateSettings.interpolate = /\{\{(.+?)\}\}/g;
 const moment = require('moment');
 
+const SYNC_STATUS = {
+  inProgress: {
+    icon: 'fa-refresh',
+    key: 'sync.status.in_progress',
+    disableSyncButton: true
+  },
+  success: {
+    icon: 'fa-check',
+    key: 'sync.status.not_required',
+    className: 'success'
+  },
+  required: {
+    icon: 'fa-exclamation-triangle',
+    key: 'sync.status.required',
+    className: 'required'
+  },
+  unknown: {
+    icon: 'fa-info-circle',
+    key: 'sync.status.unknown'
+  }
+};
+
+import { DBSync } from './services/db-sync.service'
+
 import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
@@ -31,7 +55,18 @@ export class AppComponent {
   canLogOut;
   tours;
 
-  constructor () {}
+  constructor (private dbSync:DBSync) {
+    // Set this first because if there are any bugs in configuration
+    // we want to ensure dbsync still happens so they can be fixed
+    // automatically.
+    if (dbSync.isEnabled()) {
+      // Delay it by 10 seconds so it doesn't slow down initial load.
+      setTimeout(() => dbSync.sync(), 10000);
+    } else {
+      console.debug('You have administrative privileges; not replicating');
+      this.replicationStatus.disabled = true;
+    }
+  }
 }
 /*
 
@@ -125,28 +160,6 @@ export class AppComponent {
     };
     const unsubscribe = $ngRedux.connect(mapStateToTarget, mapDispatchToTarget)(ctrl);
 
-    const SYNC_STATUS = {
-      inProgress: {
-        icon: 'fa-refresh',
-        key: 'sync.status.in_progress',
-        disableSyncButton: true
-      },
-      success: {
-        icon: 'fa-check',
-        key: 'sync.status.not_required',
-        className: 'success'
-      },
-      required: {
-        icon: 'fa-exclamation-triangle',
-        key: 'sync.status.required',
-        className: 'required'
-      },
-      unknown: {
-        icon: 'fa-info-circle',
-        key: 'sync.status.unknown'
-      }
-    };
-
     ctrl.updateReplicationStatus({
       disabled: false,
       lastTrigger: undefined,
@@ -190,16 +203,7 @@ export class AppComponent {
       ctrl.updateReplicationStatus(statusUpdates);
     });
 
-    // Set this first because if there are any bugs in configuration
-    // we want to ensure dbsync still happens so they can be fixed
-    // automatically.
-    if (DBSync.isEnabled()) {
-      // Delay it by 10 seconds so it doesn't slow down initial load.
-      $timeout(() => DBSync.sync(), 10000);
-    } else {
-      $log.debug('You have administrative privileges; not replicating');
-      ctrl.replicationStatus.disabled = true;
-    }
+
 
     const dbFetch = $window.PouchDB.fetch;
     $window.PouchDB.fetch = function() {

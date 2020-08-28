@@ -1,3 +1,17 @@
+import { createAction } from '@ngrx/store';
+
+export enum ActionTypes {
+  UPDATE_REPLICATION_STATUS = 'UPDATE_REPLICATION_STATUS',
+};
+
+export const createSingleValueAction = (type, valueName, value) => {
+  return createAction(
+    type,
+    props<{ payload: {[valueName]: value} }>
+  );
+};
+
+/*
 module.exports = {
   // Global
   CLEAR_SELECTED: 'CLEAR_SELECTED',
@@ -68,3 +82,4 @@ module.exports = {
   SET_SELECTED_TARGET_AGGREGATE: 'SET_SELECTED_TARGET_AGGREGATE',
   SET_TARGET_AGGREGATES_ERROR: 'SET_TARGET_AGGREGATES_ERROR',
 };
+*/
