@@ -1,12 +1,15 @@
 import { Store } from '@ngrx/store';
-import { ActionTypes, createSingleValueAction } from './actionTypes';
+import { createSingleValueAction } from './actionUtils';
+
+export const Actions = {
+  updateReplicationStatus: createSingleValueAction('UPDATE_REPLICATION_STATUS', 'replicationStatus'),
+}
 
 export class GlobalActions {
   constructor(private store: Store) {}
 
   updateReplicationStatus(replicationStatus) {
-    const action = createSingleValueAction(ActionTypes.UPDATE_REPLICATION_STATUS, 'replicationStatus', replicationStatus);
-    return this.store.dispatch(action);
+    return this.store.dispatch(Actions.updateReplicationStatus(replicationStatus));
   }
 }
 

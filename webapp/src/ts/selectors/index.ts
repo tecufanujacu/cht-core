@@ -1,7 +1,14 @@
-const reselect = require('reselect');
+import { createSelector } from '@ngrx/store';
+
+export const getGlobalState = (state) => state.global;
+
+export const Selectors = {
+  getReplicationStatus: createSelector(getGlobalState, globalState => globalState.replicationStatus),
+}
+
+/*const reselect = require('reselect');
 
 // Global
-const getGlobalState = state => state.global;
 const getActionBar = state => getGlobalState(state).actionBar;
 const getAndroidAppVersion = state => getGlobalState(state).androidAppVersion;
 const getCancelCallback = state => getGlobalState(state).cancelCallback;
@@ -16,7 +23,6 @@ const getIsAdmin = state => getGlobalState(state).isAdmin;
 const getLoadingContent = state => getGlobalState(state).loadingContent;
 const getLoadingSubActionBar = state => getGlobalState(state).loadingSubActionBar;
 const getMinimalTabs = state => getGlobalState(state).minimalTabs;
-const getReplicationStatus = state => getGlobalState(state).replicationStatus;
 const getSelectMode = state => getGlobalState(state).selectMode;
 const getShowActionBar = state => getGlobalState(state).showActionBar;
 const getShowContent = state => getGlobalState(state).showContent;
@@ -137,3 +143,4 @@ angular.module('inboxServices').constant('Selectors', {
   getSelectedTargetAggregate,
   getTargetAggregatesError,
 });
+*/

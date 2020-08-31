@@ -1,4 +1,6 @@
-const actionTypes = require('../actions/actionTypes');
+import { Actions } from "../actions/global";
+import { createReducer, on } from '@ngrx/store';
+
 const initialState = {
   actionBar: {
     left: {},
@@ -29,6 +31,22 @@ const initialState = {
   unreadCount: {},
   version: null,
 };
+
+const _globalReducer = createReducer(
+  initialState,
+  on(Actions.updateReplicationStatus, (state, { payload: { replicationStatus } }) => {
+    return Object.assign({}, state, {
+      replicationStatus: Object.assign({}, state.replicationStatus, replicationStatus)
+    });
+  })
+);
+
+export function globalReducer(state, action) {
+  return _globalReducer(state, action);
+}
+
+/*const actionTypes = require('../actions/actionTypes');
+
 
 module.exports = function(state, action) {
   if (typeof state === 'undefined') {
@@ -101,10 +119,8 @@ module.exports = function(state, action) {
       unreadCount: Object.assign({}, state.unreadCount, action.payload.unreadCount)
     });
   case actionTypes.UPDATE_REPLICATION_STATUS:
-    return Object.assign({}, state, {
-      replicationStatus: Object.assign({}, state.replicationStatus, action.payload.replicationStatus)
-    });
+
   default:
     return state;
   }
-};
+};*/

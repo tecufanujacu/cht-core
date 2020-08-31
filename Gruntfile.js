@@ -719,7 +719,7 @@ module.exports = function(grunt) {
         ],
       },*/
       'webapp-js': {
-        files: ['webapp/src/js/**/*', 'shared-libs/!*!/src/!**!/!*', 'webapp/src/ts/!**/!*'],
+        files: ['webapp/src/js/**/*', 'shared-libs/!*!/src/!**!/!*', 'webapp/src/ts/**/*', 'webapp/*.json'],
         tasks: [
           //'browserify:webapp',
           'exec:build-webapp',
@@ -995,7 +995,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build-common', 'Build the static resources', [
     'build-css',
     'build-js',
-    'copy:webapp',
+    //'copy:webapp',
     'exec:set-ddoc-version',
     'exec:set-horticulturalist-metadata',
     'build-admin',

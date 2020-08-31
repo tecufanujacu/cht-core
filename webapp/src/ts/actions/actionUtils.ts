@@ -1,13 +1,9 @@
 import { createAction } from '@ngrx/store';
 
-export enum ActionTypes {
-  UPDATE_REPLICATION_STATUS = 'UPDATE_REPLICATION_STATUS',
-};
-
-export const createSingleValueAction = (type, valueName, value) => {
+export const createSingleValueAction = (type, valueName:string) => {
   return createAction(
     type,
-    props<{ payload: {[valueName]: value} }>
+    (value) => ({ payload: {[valueName]: value} }),
   );
 };
 

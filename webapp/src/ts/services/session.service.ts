@@ -36,7 +36,9 @@ export class Session {
         // Set cookie to force login before using app
         this.cookieService.put('login', 'force', { path: '/' });
       })
-      .then(this.navigateToLogin);
+      .then(() => {
+        this.navigateToLogin();
+      });
   }
 
   /**
@@ -64,16 +66,17 @@ export class Session {
       return this.logout();
     }
     return this.http
-      .get('/_session')
+      .get<{ userCtx: { name:string, roles:string[] } }>('/_session', { responseType: 'json' })
       .toPromise()
-      .then(({ data }) => {
-        const name = data && data.userCtx && data.userCtx.name;
+      .then(value => {
+        const name = value && value.userCtx && value.userCtx.name;
         if (name !== userCtx.name) {
           // connected to the internet but server session is different
-          return this.logout();
+          this.logout();
+          return;
         }
-        if (_.difference(userCtx.roles, data.userCtx.roles).length ||
-          _.difference(data.userCtx.roles, userCtx.roles).length) {
+        if (_.difference(userCtx.roles, value.userCtx.roles).length ||
+          _.difference(value.userCtx.roles, userCtx.roles).length) {
           return this.refreshUserCtx().then(() => true);
         }
       })
@@ -98,6 +101,14 @@ export class Session {
   isDbAdmin(userCtx) {
     userCtx = userCtx || this.userCtx();
     return this.hasRole(userCtx, '_admin');
+  }
+
+  /**
+    * Returns true if the logged in user is online only
+  */
+  isOnlineOnly(userCtx?) {
+    userCtx = userCtx || this.userCtx();
+    return this.isAdmin(userCtx) || this.hasRole(userCtx, ONLINE_ROLE);
   }
 }
 
@@ -168,14 +179,7 @@ export class Session {
         // @param {userCtx} (optional) Will get the current userCtx if not provided.
         isDbAdmin: isDbAdmin,
 
-        /!**
-         * Returns true if the logged in user is online only
-         *!/
-        isOnlineOnly: function(userCtx) {
-          userCtx = userCtx || getUserCtx();
-          return isAdmin(userCtx) ||
-                 hasRole(userCtx, ONLINE_ROLE);
-        }
+
       };
 
     }

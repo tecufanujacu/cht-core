@@ -48,7 +48,7 @@
               "extractLicenses": false,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "optimization": true
+              "optimization": false
             },
             "production": {
               "fileReplacements": [

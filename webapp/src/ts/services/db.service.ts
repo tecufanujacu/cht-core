@@ -19,9 +19,8 @@ export class Db {
   private cache = {}
   private isOnlineOnly;
 
-
   constructor(private session:Session, private location:Location) {
-    this.isOnlineOnly = this.session.userCtx().name;
+    this.isOnlineOnly = this.session.isOnlineOnly();
 
     if (!this.isOnlineOnly) {
       // delay the cleanup so it's out of the main startup sequence

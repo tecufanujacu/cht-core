@@ -17,10 +17,10 @@ import { POUCHDB_OPTIONS } from '../constants';
   providedIn: 'root'
 })
 export class DBSync {
-  constructor() {}
+  constructor(private session:Session) {}
 
   isEnabled() {
-    return false;
+    return this.session.isOnlineOnly();
   }
 
   sync() {

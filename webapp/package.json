@@ -48,6 +48,7 @@
     "moment": "^2.26.0",
     "mustache": "^4.0.1",
     "ng-redux": "^4.4.1",
+    "ngrx-store-logger": "^0.2.4",
     "ngx-cookie": "^5.0.0",
     "object-path": "^0.11.4",
     "odk-xform-compact-record-representation-for-sms": "^1.0.1",

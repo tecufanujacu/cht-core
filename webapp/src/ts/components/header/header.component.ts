@@ -1,4 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+
+import { Selectors } from "../../selectors";
+import {GlobalActions} from "../../actions/global";
 
 @Component({
   selector: 'mm-header',
@@ -14,10 +18,11 @@ export class HeaderComponent implements OnInit {
   unreadCount = {};
   permittedTabs = [];
 
-  constructor() { }
+  constructor(private store: Store) {
+    this.store.pipe(select(Selectors.getReplicationStatus)).subscribe(obj => this.replicationStatus = obj);
+  }
 
   ngOnInit(): void {
-
   }
 
   openGuidedSetup() {

@@ -1,7 +1,34 @@
-const translationUtils = require('@medic/translation-utils');
-
 const DEFAULT_LOCALE = 'en';
 const DOC_ID_PREFIX = 'messages-';
+
+import { Injectable } from "@angular/core";
+
+import { Db } from "../services/db.service";
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TranslationLoader {
+  private readonly re = new RegExp(`^${DOC_ID_PREFIX}([a-zA-Z]+)$`);
+  constructor(private db:Db) {}
+
+  getLocale() {
+    return Promise.resolve(DEFAULT_LOCALE);
+  }
+
+  test(docId) {
+    return docId && this.re.test(docId);
+  }
+
+  getCode(docId) {
+    if (!docId) {
+      return false;
+    }
+    const match = docId.toString().match(this.re);
+    return match && match[1];
+  };
+}
+/*
 
 angular.module('inboxServices').factory('TranslationLoader',
   function(
@@ -64,4 +91,4 @@ angular.module('inboxServices').factory('TranslationLoader',
 
     return service;
   }
-);
+);*/

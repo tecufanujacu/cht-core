@@ -1,3 +1,9 @@
+import { globalReducer } from "./global";
+
+export const reducers = {
+  global: globalReducer,
+}
+/*
 (function() {
   const redux = require('redux');
 
@@ -23,3 +29,4 @@
 
   angular.module('inboxServices').constant('RootReducer', rootReducer);
 }());
+*/

@@ -1,3 +1,6 @@
+import { Component } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+
 const _ = require('lodash/core');
 _.uniq = require('lodash/uniq');
 _.groupBy = require('lodash/groupBy');
@@ -14,6 +17,12 @@ _.template = require('lodash/template');
 _.templateSettings = require('lodash/templateSettings');
 _.templateSettings.interpolate = /\{\{(.+?)\}\}/g;
 const moment = require('moment');
+
+import { DBSync } from './services/db-sync.service'
+import { Selectors } from "./selectors";
+import { GlobalActions } from "./actions/global";
+import { TranslateService } from "@ngx-translate/core";
+import { TranslationLoader } from './services/translation-loader.service';
 
 const SYNC_STATUS = {
   inProgress: {
@@ -37,14 +46,14 @@ const SYNC_STATUS = {
   }
 };
 
-import { DBSync } from './services/db-sync.service'
 
-import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
 export class AppComponent {
+  private globalActions;
+
   currentTab = '';
   showContent = false;
   privacyPolicyAccepted = true;
@@ -54,17 +63,39 @@ export class AppComponent {
   adminUrl;
   canLogOut;
   tours;
+  replicationStatus;
 
-  constructor (private dbSync:DBSync) {
+  constructor (
+    private dbSync:DBSync,
+    private store: Store,
+    private translate: TranslateService,
+    private translationLoader: TranslationLoader,
+  ) {
+    this.replicationStatus = store.pipe(select(Selectors.getReplicationStatus));
+    this.globalActions = new GlobalActions(store);
+    translationLoader.getLocale().then(locale => {
+      translate.setDefaultLang(locale);
+      translate.use(locale);
+    });
+  }
+
+  ngOnInit(): void {
+    this.globalActions.updateReplicationStatus({
+      disabled: false,
+      lastTrigger: undefined,
+      lastSuccessTo: parseInt(window.localStorage.getItem('medic-last-replicated-date')),
+      current: {},
+    });
+
     // Set this first because if there are any bugs in configuration
     // we want to ensure dbsync still happens so they can be fixed
     // automatically.
-    if (dbSync.isEnabled()) {
+    if (this.dbSync.isEnabled()) {
       // Delay it by 10 seconds so it doesn't slow down initial load.
-      setTimeout(() => dbSync.sync(), 10000);
+      setTimeout(() => this.dbSync.sync(), 10000);
     } else {
       console.debug('You have administrative privileges; not replicating');
-      this.replicationStatus.disabled = true;
+      this.globalActions.updateReplicationStatus({ disabled: true });
     }
   }
 }
@@ -159,12 +190,6 @@ export class AppComponent {
       };
     };
     const unsubscribe = $ngRedux.connect(mapStateToTarget, mapDispatchToTarget)(ctrl);
-
-    ctrl.updateReplicationStatus({
-      disabled: false,
-      lastTrigger: undefined,
-      lastSuccessTo: parseInt($window.localStorage.getItem('medic-last-replicated-date'))
-    });
 
     DBSync.addUpdateListener(({ state, to, from }) => {
       if (state === 'disabled') {
