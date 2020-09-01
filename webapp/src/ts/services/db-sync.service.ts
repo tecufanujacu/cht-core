@@ -20,7 +20,7 @@ export class DBSync {
   constructor(private session:Session) {}
 
   isEnabled() {
-    return this.session.isOnlineOnly();
+    return !this.session.isOnlineOnly();
   }
 
   sync() {

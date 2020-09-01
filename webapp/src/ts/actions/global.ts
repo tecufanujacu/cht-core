@@ -3,6 +3,8 @@ import { createSingleValueAction } from './actionUtils';
 
 export const Actions = {
   updateReplicationStatus: createSingleValueAction('UPDATE_REPLICATION_STATUS', 'replicationStatus'),
+  setMinimalTabs: createSingleValueAction('SET_MINIMAL_TABS', 'minimalTabs'),
+  setAndroidAppVersion: createSingleValueAction('SET_ANDROID_APP_VERSION', 'androidAppVersion'),
 }
 
 export class GlobalActions {
@@ -11,6 +13,16 @@ export class GlobalActions {
   updateReplicationStatus(replicationStatus) {
     return this.store.dispatch(Actions.updateReplicationStatus(replicationStatus));
   }
+
+  setMinimalTabs(minimal) {
+    return this.store.dispatch(Actions.setMinimalTabs(minimal));
+  }
+
+  setAndroidAppVersion(androidAppVersion) {
+    return this.store.dispatch(Actions.setAndroidAppVersion(androidAppVersion));
+  }
+
+
 }
 
 
@@ -50,11 +62,6 @@ angular.module('inboxServices').factory('GlobalActions',
         dispatch(ActionUtils.createSingleValueAction(actionTypes.SET_ACTION_BAR_RIGHT_VERIFIED, 'verified', value));
       }
 
-      function setAndroidAppVersion(androidAppVersion) {
-        dispatch(ActionUtils.createSingleValueAction(
-          actionTypes.SET_ANDROID_APP_VERSION, 'androidAppVersion', androidAppVersion
-        ));
-      }
 
       function createSetCancelCallbackAction(value) {
         return ActionUtils.createSingleValueAction(actionTypes.SET_CANCEL_CALLBACK, 'cancelCallback', value);
@@ -259,9 +266,6 @@ angular.module('inboxServices').factory('GlobalActions',
         });
       }
 
-      function setMinimalTabs(minimal) {
-        dispatch(ActionUtils.createSingleValueAction(actionTypes.SET_MINIMAL_TABS, 'minimalTabs', minimal));
-      }
 
       function setPrivacyPolicyAccepted(accepted) {
         dispatch(

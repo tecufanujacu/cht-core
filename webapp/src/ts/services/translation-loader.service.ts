@@ -3,17 +3,19 @@ const DOC_ID_PREFIX = 'messages-';
 
 import { Injectable } from "@angular/core";
 
-import { Db } from "../services/db.service";
+import { Settings } from "../services/settings.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslationLoader {
   private readonly re = new RegExp(`^${DOC_ID_PREFIX}([a-zA-Z]+)$`);
-  constructor(private db:Db) {}
+  constructor(private settings:Settings) {}
 
   getLocale() {
-    return Promise.resolve(DEFAULT_LOCALE);
+    return this.settings.get().then((settings:any) => {
+      return settings.locale || DEFAULT_LOCALE;
+    });
   }
 
   test(docId) {
@@ -43,9 +45,7 @@ angular.module('inboxServices').factory('TranslationLoader',
       if (options.key) {
         return $q.resolve(options.key);
       }
-      return Settings().then(function(settings) {
-        return settings.locale || DEFAULT_LOCALE;
-      });
+
     };
 
     const mapTesting = function(doc) {

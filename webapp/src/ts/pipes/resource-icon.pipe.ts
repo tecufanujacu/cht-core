@@ -7,19 +7,44 @@ import { ResourceIcons } from '../services/resource-icons.service';
   name: 'headerLogo'
 })
 export class HeaderLogoPipe implements PipeTransform {
-
   constructor(
     private resourceIcons: ResourceIcons,
     private sanitizer: DomSanitizer
   ) { }
 
   transform(name: string): SafeHtml {
-    const image = this.resourceIcons.getImg(name, 'branding') || '';
-
-    return this.sanitizer.bypassSecurityTrustHtml(image);
+    return this.sanitizer.bypassSecurityTrustHtml(this.resourceIcons.getImg(name, 'branding'));
   }
-
 }
+
+@Pipe({
+  name: 'resourceIcon'
+})
+export class ResourceIconPipe implements PipeTransform {
+  constructor(
+    private resourceIcons: ResourceIcons,
+    private sanitizer: DomSanitizer,
+  ) { }
+
+  transform(name:string, placeholder = '') {
+    return this.sanitizer.bypassSecurityTrustHtml(this.resourceIcons.getImg(name, 'resources', placeholder));
+  }
+}
+
+@Pipe({
+  name: 'partnerImage'
+})
+export class PartnerImagePipe implements PipeTransform {
+  constructor(
+    private resourceIcons: ResourceIcons,
+    private sanitizer: DomSanitizer,
+  ) { }
+
+  transform(name:string) {
+    return this.sanitizer.bypassSecurityTrustHtml(this.resourceIcons.getImg(name, 'partners'));
+  }
+}
+
 
 /*
 angular.module('inboxFilters').filter('resourceIcon',

@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 
 import { Selectors } from "../../selectors";
+import {Settings} from "../../services/settings.service";
+import {HeaderTabs} from "../../services/header-tabs.service";
+import {Auth} from "../../services/auth.service";
 import {GlobalActions} from "../../actions/global";
 
 @Component({
@@ -18,11 +21,26 @@ export class HeaderComponent implements OnInit {
   unreadCount = {};
   permittedTabs = [];
 
-  constructor(private store: Store) {
+  private globalActions;
+
+  constructor(
+    private store: Store,
+    private settings: Settings,
+    private headerTabs: HeaderTabs,
+    private auth: Auth,
+  ) {
     this.store.pipe(select(Selectors.getReplicationStatus)).subscribe(obj => this.replicationStatus = obj);
+    this.globalActions = new GlobalActions(store);
   }
 
   ngOnInit(): void {
+    this.settings.get().then(settings => {
+      const tabs = this.headerTabs.get(settings);
+      return Promise.all(tabs.map(tab => this.auth.has(tab.permissions))).then(results => {
+        this.permittedTabs = tabs.filter((tab,index) => results[index]);
+        this.globalActions.setMinimalTabs(this.permittedTabs.length > 3);
+      });
+    });
   }
 
   openGuidedSetup() {
@@ -105,13 +123,7 @@ export class HeaderComponent implements OnInit {
 
       Tour.getTours().then(tours => ctrl.tours = tours);
 
-      Settings().then(settings => {
-        const tabs = HeaderTabs(settings);
-        return $q.all(tabs.map(tab => Auth.has(tab.permissions))).then(results => {
-          ctrl.permittedTabs = tabs.filter((tab,index) => results[index]);
-          ctrl.setMinimalTabs(ctrl.permittedTabs.length > 3);
-        });
-      });
+
 
       $scope.$on('$destroy', unsubscribe);
     },

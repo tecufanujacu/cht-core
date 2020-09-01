@@ -23,6 +23,9 @@ import { Selectors } from "./selectors";
 import { GlobalActions } from "./actions/global";
 import { TranslateService } from "@ngx-translate/core";
 import { TranslationLoader } from './services/translation-loader.service';
+import {Session} from "./services/session.service";
+import {Auth} from "./services/auth.service";
+import {ResourceIcons} from "./services/resource-icons.service";
 
 const SYNC_STATUS = {
   inProgress: {
@@ -53,6 +56,7 @@ const SYNC_STATUS = {
 })
 export class AppComponent {
   private globalActions;
+  setupPromise;
 
   currentTab = '';
   showContent = false;
@@ -61,25 +65,45 @@ export class AppComponent {
   selectMode = false;
   minimalTabs = false;
   adminUrl;
-  canLogOut;
-  tours;
+  canLogOut = false;
+  tours = [];
   replicationStatus;
+  androidAppVersion;
 
   constructor (
     private dbSync:DBSync,
     private store: Store,
     private translate: TranslateService,
     private translationLoader: TranslationLoader,
+    private session: Session,
+    private auth: Auth,
+    private resourceIcons: ResourceIcons,
   ) {
     this.replicationStatus = store.pipe(select(Selectors.getReplicationStatus));
+    this.androidAppVersion = store.pipe(select(Selectors.getAndroidAppVersion));
     this.globalActions = new GlobalActions(store);
     translationLoader.getLocale().then(locale => {
       translate.setDefaultLang(locale);
       translate.use(locale);
     });
+
+    moment.locale(['en']);
   }
 
   ngOnInit(): void {
+    if (
+      (<any>window).medicmobile_android &&
+      typeof (<any>window).medicmobile_android.getAppVersion === 'function'
+    ) {
+      this.globalActions.setAndroidAppVersion((<any>window).medicmobile_android.getAppVersion())
+    }
+
+    if (this.androidAppVersion) {
+      this.auth.has('can_log_out_on_android').then(canLogout => this.canLogOut = canLogout);
+    } else {
+      this.canLogOut = true;
+    }
+
     this.globalActions.updateReplicationStatus({
       disabled: false,
       lastTrigger: undefined,
@@ -97,6 +121,13 @@ export class AppComponent {
       console.debug('You have administrative privileges; not replicating');
       this.globalActions.updateReplicationStatus({ disabled: true });
     }
+
+    this.setupPromise = this.session.init();
+
+    this.resourceIcons.getAppTitle().then(title => {
+      document.title = title;
+      (<any>window).$('.header-logo').attr('title', `${title}`);
+    });
   }
 }
 /*
@@ -268,14 +299,6 @@ export class AppComponent {
       Debug.set(false);
     }
 
-    const setAppTitle = () => {
-      ResourceIcons.getAppTitle().then(title => {
-        document.title = title;
-        $('.header-logo').attr('title', `${title}`);
-      });
-    };
-    setAppTitle();
-
     Changes({
       key: 'branding-icon',
       filter: change => change.id === 'branding',
@@ -315,12 +338,6 @@ export class AppComponent {
     ctrl.setIsAdmin(Session.isAdmin());
     ctrl.modalsToShow = [];
 
-    if (
-      $window.medicmobile_android &&
-      typeof $window.medicmobile_android.getAppVersion === 'function'
-    ) {
-      ctrl.setAndroidAppVersion($window.medicmobile_android.getAppVersion());
-    }
 
     if (navigator.storage && navigator.storage.persist) {
       navigator.storage.persist().then(granted => {
@@ -332,12 +349,7 @@ export class AppComponent {
       });
     }
 
-    ctrl.canLogOut = false;
-    if (ctrl.androidAppVersion) {
-      Auth.has('can_log_out_on_android').then(canLogout => ctrl.canLogOut = canLogout);
-    } else {
-      ctrl.canLogOut = true;
-    }
+
 
     $transitions.onBefore({}, (trans) => {
       if (ctrl.enketoEdited && ctrl.cancelCallback) {
@@ -446,7 +458,7 @@ export class AppComponent {
         .catch(err => $log.error('Failed to retrieve forms', err));
     };
 
-    moment.locale(['en']);
+
 
     Language()
       .then(function(language) {

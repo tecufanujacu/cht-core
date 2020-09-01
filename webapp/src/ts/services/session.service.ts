@@ -47,7 +47,7 @@ export class Session {
   */
   userCtx () {
     if (!this.userCtxCookieValue) {
-      this.userCtxCookieValue = this.cookieService.get(COOKIE_NAME);
+      this.userCtxCookieValue = JSON.parse(this.cookieService.get(COOKIE_NAME));
     }
 
     return this.userCtxCookieValue;
@@ -94,7 +94,7 @@ export class Session {
 
   isAdmin(userCtx) {
     userCtx = userCtx || this.userCtx();
-    return this.hasRole(userCtx, '_admin') ||
+    return this.isDbAdmin(userCtx) ||
       this.hasRole(userCtx, 'national_admin'); // deprecated: kept for backwards compatibility: #4525
   }
 

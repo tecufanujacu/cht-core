@@ -1,7 +1,9 @@
 import { globalReducer } from "./global";
+import { servicesReducer } from "./services";
 
 export const reducers = {
   global: globalReducer,
+  services: servicesReducer,
 }
 /*
 (function() {

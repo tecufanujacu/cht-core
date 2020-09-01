@@ -682,7 +682,7 @@ module.exports = function(grunt) {
         ],
       },
       'admin-js': {
-        files: ['admin/src/js/**/*', 'webapp/src/js/**/*', 'shared-libs/*/src/**/*'],
+        files: ['admin/src/js/**/*', 'shared-libs/*/src/**/*'],
         tasks: [
           'browserify:admin',
           'couch-compile:secondary',

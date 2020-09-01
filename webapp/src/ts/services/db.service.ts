@@ -75,7 +75,7 @@ export class Db {
   get({ remote=this.isOnlineOnly, meta=false, usersMeta=false }={}) {
     const name = this.getDbName(remote, meta, usersMeta);
     if (!this.cache[name]) {
-      this.cache[name] = (<any>window).pouchDB(name, this.getParams(remote, meta, usersMeta));
+      this.cache[name] = (<any>window).PouchDB(name, this.getParams(remote, meta, usersMeta));
     }
     return this.cache[name];
   }

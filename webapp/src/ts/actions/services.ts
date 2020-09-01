@@ -1,6 +1,22 @@
+import { Store } from '@ngrx/store';
+import { createSingleValueAction } from './actionUtils';
+
+export const Actions = {
+  setLastChangedDoc: createSingleValueAction('SET_LAST_CHANGED_DOC', 'lastChangedDoc'),
+}
+
+export class ServicesActions {
+  constructor(private store: Store) {}
+
+  setLastChangedDoc(lastChangedDoc) {
+    return this.store.dispatch(Actions.setLastChangedDoc(lastChangedDoc));
+  }
+}
+
+/*
 const actionTypes = require('./actionTypes');
 
-/**
+/!**
  * Ideally in redux, actions should import services, and services should
  * not import actions. There appear to be valid use cases for services
  * importing actions in this app however, for example reading and writing
@@ -10,7 +26,7 @@ const actionTypes = require('./actionTypes');
  * service needs to dispatch an action. In general however this should
  * be avoided, and actions should be dispatched from either components
  * or complex action dispatchers.
- */
+ *!/
 angular.module('inboxServices').factory('ServicesActions',
   function(
     ActionUtils
@@ -30,3 +46,4 @@ angular.module('inboxServices').factory('ServicesActions',
     };
   }
 );
+*/

@@ -1,16 +1,18 @@
 import { createSelector } from '@ngrx/store';
 
-export const getGlobalState = (state) => state.global;
+const getGlobalState = (state) => state.global;
+const getServicesState = state => state.services;
 
 export const Selectors = {
   getReplicationStatus: createSelector(getGlobalState, globalState => globalState.replicationStatus),
+  getAndroidAppVersion: createSelector(getGlobalState, globalState => globalState.androidAppVersion),
+  getLastChangedDoc: createSelector(getServicesState, servicesState => servicesState.lastChangedDoc),
 }
 
 /*const reselect = require('reselect');
 
 // Global
 const getActionBar = state => getGlobalState(state).actionBar;
-const getAndroidAppVersion = state => getGlobalState(state).androidAppVersion;
 const getCancelCallback = state => getGlobalState(state).cancelCallback;
 const getCurrentTab = state => getGlobalState(state).currentTab;
 const getEnketoStatus = state => getGlobalState(state).enketoStatus;
@@ -70,9 +72,7 @@ const getSelectedReportsDocs = reselect.createSelector(
 );
 const getVerifyingReport = state => getReportsState(state).verifyingReport;
 
-// Services
-const getServicesState = state => state.services;
-const getLastChangedDoc = state => getServicesState(state).lastChangedDoc;
+
 
 // Tasks
 const getTasksState = state => state.tasks;
